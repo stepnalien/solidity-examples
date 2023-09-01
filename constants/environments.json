@@ -6,7 +6,14 @@
     "polygon",
     "arbitrum",
     "optimism",
-    "fantom"
+    "fantom",
+    "celo",
+    "zkevm",
+    "zksync-era",
+    "arbitrum-nova",
+    "linea",
+    "base",
+    "zora"
   ],
   "testnet": [
     "goerli",
@@ -15,6 +22,14 @@
     "mumbai",
     "arbitrum-goerli",
     "optimism-goerli",
-    "fantom-testnet"
+    "fantom-testnet",
+    "celo-testnet",
+    "zkevm-testnet",
+    "zksync-testnet",
+    "linea-testnet",
+    "base-testnet",
+    "zora-testnet",
+    "opbnb-testnet",
+    "scroll-testnet"
   ]
 }
