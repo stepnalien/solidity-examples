@@ -29,6 +29,27 @@ contract AlphaApesONFT is ONFT721 {
         maxMintId = _endMintId;
     }
 
+    function getOwnedTokenIds(address _owner) external view returns (uint256[] memory) {
+        uint256 tokenCount = balanceOf(_owner);
+        uint256[] memory tokensId = new uint256[](tokenCount);
+
+        if (tokenCount == 0) {
+            return tokensId;
+        }
+
+        uint256 key = 0;
+        for (uint256 i = 0; i < maxMintId; i++) {
+            if (_ownerOf(i) == _owner) {
+                tokensId[key] = i;
+                key++;
+                if (key == tokenCount) {
+                    break;
+                }
+            }
+        }
+
+        return tokensId;
+    }
 
     /// @notice those all are function.
     function setBaseURI(string memory baseURI) public onlyOwner {
