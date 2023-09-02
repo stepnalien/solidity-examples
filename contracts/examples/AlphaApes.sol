@@ -6,7 +6,7 @@ import "../token/onft/ONFT721.sol";
 
 /// @title Interface of the UniversalONFT standard
 contract AlphaApesONFT is ONFT721 {
-    string public baseTokenURI;
+    string public magicURI;
     uint256 public mintPrice;
     uint public nextMintId;
     uint public maxMintId;
@@ -51,15 +51,20 @@ contract AlphaApesONFT is ONFT721 {
         return tokensId;
     }
 
-    /// @notice those all are function.
-    function setBaseURI(string memory baseURI) public onlyOwner {
-        baseTokenURI = baseURI;
+    /// @param _magicURI the common image URI
+    function setMagicURI(string memory _magicURI) public onlyOwner {
+        magicURI = _magicURI;
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
-        return baseTokenURI;
+    //  return magicURI;
     }
 
+    // Override the tokenURI function to return common image URI if available
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        string memory baseTokenURI = super.tokenURI(tokenId);
+        return bytes(baseTokenURI).length > 0 ? baseTokenURI : magicURI;
+    }
 
     /// @notice Mint your ONFT
     function mint() external payable {
