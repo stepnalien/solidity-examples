@@ -1,14 +1,106 @@
 {
+  "goerli": {
+       "startMintId": 1,
+       "endMintId": 5000000
+  },
   "bsc-testnet": {
-    "startMintId": 1,
-    "endMintId": 10
+       "startMintId": 5000001,
+       "endMintId": 10000000
   },
   "fuji": {
-    "startMintId": 11,
-    "endMintId": 20
+       "startMintId": 10000001,
+       "endMintId": 15000000
   },
-  "goerli": {
-    "startMintId": 21,
-    "endMintId": 30
+  "mumbai": {
+       "startMintId": 15000001,
+       "endMintId": 20000000
+  },
+  "arbitrum-goerli": {
+       "startMintId": 20000001,
+       "endMintId": 25000000
+  },
+  "optimism-goerli": {
+       "startMintId": 25000001,
+       "endMintId": 30000000
+  },
+  "harmony-testnet": {
+       "startMintId": 30000001,
+       "endMintId": 35000000
+  },
+  "moonbeam-testnet": {
+       "startMintId": 35000001,
+       "endMintId": 40000000
+  },
+  "metis-testnet": {
+       "startMintId": 40000001,
+       "endMintId": 45000000
+  },
+  "gnosis-testnet": {
+       "startMintId": 45000001,
+       "endMintId": 50000000
+  },
+  "fantom-testnet": {
+       "startMintId": 50000001,
+       "endMintId": 55000000
+  },
+  "celo-testnet": {
+       "startMintId": 55000001,
+       "endMintId": 60000000
+  },
+  "base-testnet": {
+       "startMintId": 60000001,
+       "endMintId": 65000000
+  },
+  "meter-testnet": {
+       "startMintId": 65000001,
+       "endMintId": 70000000
+  },
+  "linea-testnet": {
+       "startMintId": 70000001,
+       "endMintId": 75000000
+  },
+  "mantle-testnet": {
+       "startMintId": 75000001,
+       "endMintId": 80000000
+  },
+  "scroll-testnet": {
+       "startMintId": 80000001,
+       "endMintId": 85000000
+  },
+  "tenet-testnet": {
+       "startMintId": 85000001,
+       "endMintId": 90000000
+  },
+  "canto-testnet": {
+       "startMintId": 90000001,
+       "endMintId": 95000000
+  },
+  "kava-testnet": {
+       "startMintId": 95000001,
+       "endMintId": 100000000
+  },
+  "telos-testnet": {
+       "startMintId": 100000001,
+       "endMintId": 105000000
+  },
+  "tomo-testnet": {
+       "startMintId": 105000001,
+       "endMintId": 110000000
+  },
+  "zora-testnet": {
+       "startMintId": 110000001,
+       "endMintId": 115000000
+  },
+  "shimmer-testnet": {
+       "startMintId": 115000001,
+       "endMintId": 120000000
+  },
+  "zksync-testnet": {
+       "startMintId": 120000001,
+       "endMintId": 125000000
+  },
+  "aurora-testnet": {
+       "startMintId": 125000001,
+       "endMintId": 130000000
   }
 }
