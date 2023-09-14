@@ -3,13 +3,18 @@
 pragma solidity ^0.8.0;
 
 import "../token/onft/ONFT721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 
 /// @title Interface of the UniversalONFT standard
-contract AlphaApesONFT is ONFT721 {
+contract AlphaApesONFT is ONFT721, IERC721Enumerable {
     string public magicURI;
     uint256 public mintPrice;
-    uint public nextMintId;
-    uint public maxMintId;
+    uint256 public nextMintId;
+    uint256 public maxMintId;
+
+    bool public isReveal;
+    mapping(address => uint256[]) private ownerTokenIds;
+    mapping(uint256 => uint256) private tokenIdIndex;
 
     /// @notice Constructor for the UniversalONFT
     /// @param _name the name of the token
@@ -22,51 +27,35 @@ contract AlphaApesONFT is ONFT721 {
         string memory _symbol, 
         uint256 _minGasToTransfer, 
         address _layerZeroEndpoint, 
-        uint _startMintId, 
-        uint _endMintId
+        uint256 _startMintId, 
+        uint256 _endMintId
     ) ONFT721 (_name, _symbol, _minGasToTransfer, _layerZeroEndpoint) {
         nextMintId = _startMintId;
         maxMintId = _endMintId;
     }
 
-    function getOwnedTokenIds(address _owner) external view returns (uint256[] memory) {
-        uint256 tokenCount = balanceOf(_owner);
-        uint256[] memory tokensId = new uint256[](tokenCount);
-
-        if (tokenCount == 0) {
-            return tokensId;
-        }
-
-        uint256 key = 0;
-        for (uint256 i = 0; i < maxMintId; i++) {
-            if (_ownerOf(i) == _owner) {
-                tokensId[key] = i;
-                key++;
-                if (key == tokenCount) {
-                    break;
-                }
-            }
-        }
-
-        return tokensId;
-    }
-
-    /// @param _magicURI the common image URI
     function setMagicURI(string memory _magicURI) public onlyOwner {
         magicURI = _magicURI;
     }
 
-    function _baseURI() internal view virtual override returns (string memory) {
-    //  return magicURI;
+    // Function to toggle reveal status
+    function setReveal() external onlyOwner {
+        isReveal = !isReveal;
     }
 
-    // Override the tokenURI function to return common image URI if available
+    function _baseURI() internal view virtual override returns (string memory) {
+        if  (isReveal) {
+        return magicURI;
+        } else {
+        return "";
+        }
+    }
+
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         string memory baseTokenURI = super.tokenURI(tokenId);
         return bytes(baseTokenURI).length > 0 ? baseTokenURI : magicURI;
     }
 
-    /// @notice Mint your ONFT
     function mint() external payable {
         require(msg.value >= mintPrice, "Not enough ether sent");
         require(nextMintId <= maxMintId, "AlphaApesONFT: max mint limit reached");
@@ -75,6 +64,9 @@ contract AlphaApesONFT is ONFT721 {
         nextMintId++;
 
         _safeMint(msg.sender, newId);
+        // Update ownerTokenIds mapping when minting
+        ownerTokenIds[msg.sender].push(newId);
+        tokenIdIndex[newId] = ownerTokenIds[msg.sender].length - 1;
     }
 
     function estimateGasBridgeFee(uint16 _dstChainId, bool _useZro, bytes memory _adapterParams) public view virtual returns (uint nativeFee, uint zroFee) {
@@ -94,5 +86,23 @@ contract AlphaApesONFT is ONFT721 {
     function withdrawFees() external onlyOwner {
         require(address(this).balance > 0, "No fees to withdraw");
         payable(owner()).transfer(address(this).balance);
+    }
+
+    function totalSupply() public view override returns (uint256) {
+        return maxMintId;
+    }
+
+    function tokenByIndex(uint256 index) public view override returns (uint256) {
+        require(index < totalSupply(), "Index out of bounds");
+        return index;
+    }
+
+    function tokensOfOwner(address owner) public view returns (uint256[] memory) {
+        return ownerTokenIds[owner];
+    }
+    
+    function tokenOfOwnerByIndex(address owner, uint256 index) public view override returns (uint256) {
+        require(index < ownerTokenIds[owner].length, "Index out of bounds");
+        return ownerTokenIds[owner][index];
     }
 }
