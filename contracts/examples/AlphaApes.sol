@@ -34,7 +34,7 @@ contract AlphaApesONFT is ONFT721, IERC721Enumerable {
         maxMintId = _endMintId;
     }
 
-    function setMagicURI(string memory _magicURI) public onlyOwner {
+    function setMagicURI(string memory _magicURI) external onlyOwner {
         magicURI = _magicURI;
     }
 
@@ -60,7 +60,7 @@ contract AlphaApesONFT is ONFT721, IERC721Enumerable {
         require(msg.value >= mintPrice, "Not enough ether sent");
         require(nextMintId <= maxMintId, "AlphaApesONFT: max mint limit reached");
 
-        uint newId = nextMintId;
+        uint256 newId = nextMintId;
         nextMintId++;
 
         _safeMint(msg.sender, newId);
