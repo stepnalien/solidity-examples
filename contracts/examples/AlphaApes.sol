@@ -33,11 +33,11 @@ contract AlphaApesONFT is ONFT721 {
         maxMintId = _endMintId;
     }
 
+    // Configuration Functions
     function setMagicURI(string memory _magicURI) external onlyOwner {
         magicURI = _magicURI;
     }
 
-    // Function to toggle reveal status
     function setReveal() external onlyOwner {
         isReveal = !isReveal;
     }
@@ -46,6 +46,7 @@ contract AlphaApesONFT is ONFT721 {
         mintPrice = _price;
     }
 
+    // Minting Function
     function mint() external payable {
         require(msg.value >= mintPrice, "Not enough ether sent");
         require(nextMintId <= maxMintId, "AlphaApesONFT: max mint limit reached");
@@ -59,6 +60,7 @@ contract AlphaApesONFT is ONFT721 {
         tokenIdIndex[newId] = ownerTokenIds[msg.sender].length - 1;
     }
 
+    // Bridge Functions
     function estimateGasBridgeFee(uint16 _dstChainId, bool _useZro, bytes memory _adapterParams) public view virtual returns (uint nativeFee, uint zroFee) {
         bytes memory payload = abi.encode(msg.sender,0);
         return lzEndpoint.estimateFees(_dstChainId, payable(address(this)), payload, _useZro, _adapterParams);
@@ -69,6 +71,7 @@ contract AlphaApesONFT is ONFT721 {
         _lzSend(_dstChainId, abi.encode(msg.sender,0), payable(address(this)), _zroPaymentAddress, _adapterParams, msg.value);
     }
 
+    // Token Information Functions
     function _baseURI() internal view virtual override returns (string memory) {
         if  (isReveal) {
         return magicURI;
@@ -86,6 +89,7 @@ contract AlphaApesONFT is ONFT721 {
         return ownerTokenIds[owner];
     }
 
+    // Withdrawal Functions
     function withdrawFees() external onlyOwner {
         require(address(this).balance > 0, "No fees to withdraw");
         payable(owner()).transfer(address(this).balance);
