@@ -3,10 +3,9 @@
 pragma solidity ^0.8.0;
 
 import "../token/onft/ONFT721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 
 /// @title Interface of the UniversalONFT standard
-contract AlphaApesONFT is ONFT721, IERC721Enumerable {
+contract AlphaApesONFT is ONFT721 {
     string public magicURI;
     uint256 public mintPrice;
     uint256 public nextMintId;
@@ -43,17 +42,8 @@ contract AlphaApesONFT is ONFT721, IERC721Enumerable {
         isReveal = !isReveal;
     }
 
-    function _baseURI() internal view virtual override returns (string memory) {
-        if  (isReveal) {
-        return magicURI;
-        } else {
-        return "";
-        }
-    }
-
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        string memory baseTokenURI = super.tokenURI(tokenId);
-        return bytes(baseTokenURI).length > 0 ? baseTokenURI : magicURI;
+    function setPrice(uint256 _price) external onlyOwner {
+        mintPrice = _price;
     }
 
     function mint() external payable {
@@ -79,30 +69,25 @@ contract AlphaApesONFT is ONFT721, IERC721Enumerable {
         _lzSend(_dstChainId, abi.encode(msg.sender,0), payable(address(this)), _zroPaymentAddress, _adapterParams, msg.value);
     }
 
-    function setPrice(uint256 _price) external onlyOwner {
-        mintPrice = _price;
+    function _baseURI() internal view virtual override returns (string memory) {
+        if  (isReveal) {
+        return magicURI;
+        } else {
+        return "";
+        }
     }
 
-    function withdrawFees() external onlyOwner {
-        require(address(this).balance > 0, "No fees to withdraw");
-        payable(owner()).transfer(address(this).balance);
-    }
-
-    function totalSupply() public view override returns (uint256) {
-        return maxMintId;
-    }
-
-    function tokenByIndex(uint256 index) public view override returns (uint256) {
-        require(index < totalSupply(), "Index out of bounds");
-        return index;
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        string memory baseTokenURI = super.tokenURI(tokenId);
+        return bytes(baseTokenURI).length > 0 ? baseTokenURI : magicURI;
     }
 
     function tokensOfOwner(address owner) public view returns (uint256[] memory) {
         return ownerTokenIds[owner];
     }
-    
-    function tokenOfOwnerByIndex(address owner, uint256 index) public view override returns (uint256) {
-        require(index < ownerTokenIds[owner].length, "Index out of bounds");
-        return ownerTokenIds[owner][index];
+
+    function withdrawFees() external onlyOwner {
+        require(address(this).balance > 0, "No fees to withdraw");
+        payable(owner()).transfer(address(this).balance);
     }
 }
