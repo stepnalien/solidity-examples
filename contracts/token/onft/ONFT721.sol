@@ -5,14 +5,19 @@ pragma solidity ^0.8.0;
 import "./IONFT721.sol";
 import "./ONFT721Core.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 // NOTE: this ONFT contract has no public minting logic.
 // must implement your own minting logic in child classes
-contract ONFT721 is ONFT721Core, ERC721, IONFT721 {
+contract ONFT721 is ONFT721Core, ERC721, IONFT721, ERC721Enumerable {
     constructor(string memory _name, string memory _symbol, uint256 _minGasToTransfer, address _lzEndpoint) ERC721(_name, _symbol) ONFT721Core(_minGasToTransfer, _lzEndpoint) {}
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ONFT721Core, ERC721, IERC165) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ONFT721Core, ERC721, IERC165, ERC721Enumerable) returns (bool) {
         return interfaceId == type(IONFT721).interfaceId || super.supportsInterface(interfaceId);
+    }
+
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize) internal override(ERC721, ERC721Enumerable) {
+        super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
     function _debitFrom(address _from, uint16, bytes memory, uint _tokenId) internal virtual override {
