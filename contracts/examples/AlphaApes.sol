@@ -12,8 +12,6 @@ contract AlphaApesONFT is ONFT721 {
     uint256 public maxMintId;
 
     bool public isReveal;
-    mapping(address => uint256[]) private ownerTokenIds;
-    mapping(uint256 => uint256) private tokenIdIndex;
 
     /// @notice Constructor for the UniversalONFT
     /// @param _name the name of the token
@@ -55,9 +53,6 @@ contract AlphaApesONFT is ONFT721 {
         nextMintId++;
 
         _safeMint(msg.sender, newId);
-        // Update ownerTokenIds mapping when minting
-        ownerTokenIds[msg.sender].push(newId);
-        tokenIdIndex[newId] = ownerTokenIds[msg.sender].length - 1;
     }
 
     // Bridge Functions
@@ -83,10 +78,6 @@ contract AlphaApesONFT is ONFT721 {
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         string memory baseTokenURI = super.tokenURI(tokenId);
         return bytes(baseTokenURI).length > 0 ? baseTokenURI : magicURI;
-    }
-
-    function tokensOfOwner(address owner) public view returns (uint256[] memory) {
-        return ownerTokenIds[owner];
     }
 
     // Withdrawal Functions
